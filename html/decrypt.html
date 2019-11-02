@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+ 
+  <title>Secure Message Transfer - Decryption Page</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!------------------------------------ links -------------------------------------------->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Playfair+Display:900|Roboto:400,400i,500,700" rel="stylesheet" />
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<!------------------------------------ links -------------------------------------------->
+<!-- ===================================Scripts======================================= -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/3.1.2/rollups/aes.js"></script>
+  <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+<!-- ===================================Scripts======================================= -->
+</head>
+
+<body>
+<nav class="navbar navbar-expand bg-info navbar-dark sticky-top">
+   <a class="navbar-brand" href="home.html"><img src="smt_logo1.png" width="200px" height="45px" class="d-inline-block align-top" alt=""></a>
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item ">
+          <a class="nav-link " href="home.html"><i class="fas fa-home"></i> Home</a>
+        </li> 
+         <li class="nav-item ">
+          <a class="nav-link " href="about.html"><i class="fas fa-question-circle"></i> About</a>
+        </li> 
+      </ul>      
+</nav>
+<div class="jumbotron text-center">
+  <h1>Decryption</h1>
+  <p>Decrypt The Message Your Friends Have Sent You</p> 
+</div>
+<br>
+ <div class="container" >
+  <div class="row">
+      <div class="col-sm-1 lg-1 md-1 xl-1"></div>
+            <div class="col-sm-10">            
+              <div class="card">
+                  <div class="card-header bg-info text-white"> <h6>Messasge Decryption:</h6> </div>      
+                  <div class="card-body">                   
+                      <form class="form-controls" action="#" name="encryption_form" method="">  
+                              <div class="form-group">
+                                  <label class="control-label" for="key">Secret-Key <span class="text-danger">*</span> </label>
+                                  <input type="text" class="form-control" id="key" placeholder="Enter Secret Key" name="key">                                  
+                              </div>             
+                              <div class="form-group">
+                                    <label class="control-label" for="ciphertxt">Message Received (Cipher Text) <span class="text-danger">*</span></label>
+                                    <textarea class="form-control" rows="5" id="ciphertxt" name="ciphertext" placeholder="Enter the Encrypted Message Here"></textarea>
+                              </div> 
+                              </form> 
+                              <div class="form-group float-right">        
+                                  <button class="btn btn-primary" onclick="Decrypt()"> Decrypt </button>                                   
+                              </div>                                                                                         
+                  </div>
+                  </div>            
+                  <!-- end card -->
+                  <br>
+                  <div class="card ">
+                      <div class="card-header bg-info text-white"> <h6> Message After Decryption (Plain Text) </h6> </div>
+                      <div class="card-body">
+                        <div class="form-group" >                                     
+                                      <style type="text/css">
+                                          .textarea-container {
+                                                  position: relative;
+                                                }
+                                            .textarea-container textarea {
+                                              width: 100%;
+                                              height: 100%;
+                                              box-sizing: border-box;
+                                            }
+                                            .textarea-container button {
+                                              position: absolute;
+                                              top: 0;
+                                              right: 0;
+                                            }
+                                                .btn-sml {
+                                                    padding: 5px 5px;
+                                                    font-size: 9px;
+                                                    border-radius: 4px;
+                                                }                                                
+                                          </style>             
+                                      <div class="textarea-container">
+                                          <textarea class="form-control " rows="5" id="plaintxt" name="ciphertext" placeholder="Your Messaage After Decryption"></textarea>
+                                          <button class="btn btn-info btn-sml" id="copy" onclick="Copy()"><i class="fas fa-copy"></i> CopyText</button>
+                                                          <script type="text/javascript">
+                                                            function Copy() {
+                                                                 var textarea = document.getElementById("plaintxt");
+                                                                 textarea.select();
+                                                                 document.execCommand("copy");
+                                                                 if(document.getElementById('plaintxt').value.length != 0)
+                                                                    swal("Copied to Clipboard","", "success");
+                                                                }
+                                                          </script>
+                                    </div>
+                              </div>
+                            <div class="form-group float-right"> 
+                                  <button class="btn btn-secondary" onclick="Clear()"> Decrypt another message </button>     
+
+                                  <script type="text/javascript">
+                                              function Clear() {                                                
+                                                document.getElementById('plaintxt').value = '';
+                                                document.getElementById('ciphertxt').value = '';
+                                                document.getElementById('key').value = '';
+                                              }
+
+                                          function Decrypt(){
+                                                if(document.getElementById('key').value.length == 0 || document.getElementById('ciphertxt').value.length == 0){
+                                                        swal("Error!", "Please enter both the key and the cipher text!", "warning");
+                                                      }                                          
+                                                else {
+                                                  var decryptedBytes = CryptoJS.AES.decrypt(document.getElementById('ciphertxt').value, document.getElementById('key').value);
+                                                  document.getElementById('plaintxt').value = decryptedBytes.toString(CryptoJS.enc.Utf8);
+                                                  if(document.getElementById('plaintxt').value.length == 0 )
+                                                        swal("Error!", "Cannot Decrypt! Please check the values properly!", "error");
+                                                }
+                                          }
+                                            </script>                              
+                            </div>
+                      </div>
+                  </div>            
+                  </div>
+                  <div class="col-sm-1 lg-1 md-1 xl-1"></div>
+    </div> 
+  <!-- end row -->
+</div>
+<!-- end container -->
+
+</body>
+</html>
